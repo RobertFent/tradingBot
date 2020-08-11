@@ -149,6 +149,7 @@ def do_next_action(percentage_price_change, bot, calc, symbol, current_avg_price
     return False
 
 
+# todo parse init_state out of log file
 def main():
     symbol, percentage = parse_arguments()
     calc, bot = init_classes(False, 'BUY', symbol)
@@ -157,6 +158,10 @@ def main():
     logging.info('Percentage of balance the bot will trade with: %2.2f' % (percentage))
     
     starting_balance = bot.get_coin_amount(symbol[:base_coin_len])
+
+    # todo total amount of coins to buy with bnb instead of bnb as coins
+    print(bot.send_order_total('MARKET', round(0.2606873275, 2)))
+
     bot_loop(calc, bot, symbol, starting_balance, percentage)
 
 
