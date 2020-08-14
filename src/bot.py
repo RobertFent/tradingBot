@@ -113,6 +113,13 @@ class TradingBot:
         response = requests.get(self.baseEndpoint + '/api/v3/avgPrice', params=payload)
         return self._handle_response(response)['price']
 
+    def get_symbol_price(self):
+        payload = {
+            'symbol': self.symbol
+        }
+        response = requests.get(self.baseEndpoint + '/api/v3/ticker/price', params=payload)
+        return self._handle_response(response)['price']
+
     def get_daily_stats(self):
         payload = {
             'symbol': self.symbol
