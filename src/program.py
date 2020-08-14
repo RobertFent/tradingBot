@@ -50,6 +50,7 @@ STOP_LOSS_THRESHOLD = float(os.getenv('STOP_LOSS_THRESHOLD'))
 
 profit_arr = []
 
+# todo decide where to parse float to str
 
 def init_classes(testing, init_state, symbol):
     logging.basicConfig(filename='./logs/trade_history_%s.log' % (symbol), level=logging.INFO)
@@ -82,14 +83,14 @@ def get_readable_timestamp():
 
 
 def bot_loop(calc, bot, symbol, starting_balance, percentage_balance):
-    default_price = bot.get_current_average_price()
+    default_price = float(bot.get_symbol_price())
     i = 0
     while True:
-        current_avg_price = bot.get_current_average_price()
+        current_price = float(bot.get_symbol_price())
         total_price_change = calc.get_total_change(
-            current_avg_price, default_price)
+            current_price, default_price)
         percentage_price_change = round(
-            calc.get_percentage_change(current_avg_price, default_price), 3)
+            calc.get_percentage_change(current_price, default_price), 3)
 
         if i % 5 == 0:
             print('\n\nTime: %s' % (get_readable_timestamp()))
@@ -99,8 +100,8 @@ def bot_loop(calc, bot, symbol, starting_balance, percentage_balance):
         if should_exit(bot, symbol, starting_balance):
             raise Exception('Time to go now')
 
-        if do_next_action(percentage_price_change, bot, calc, symbol, current_avg_price, percentage_balance):
-            default_price = current_avg_price
+        if do_next_action(percentage_price_change, bot, calc, symbol, current_price, percentage_balance):
+            default_price = current_price
         time.sleep(30)
         i += 1
 
@@ -110,9 +111,11 @@ def should_exit(bot, symbol, starting_balance):
     current_balance = float(bot.get_coin_amount(symbol[:base_coin_len]))
     return current_balance < float(starting_balance)/2 or current_balance > float(starting_balance)*2
 
+# todo? round needed?
+def calc_trading_coins(calc, current_balance, percentage_balance, current_price):
+    base_coins = calc.get_amount_by_percentage(percentage_balance, current_balance)
+    return round(base_coins / current_price, 2)
 
-def calc_trading_coins(calc, current_balance, percentage_balance):
-    return calc.get_amount_by_percentage(percentage_balance, current_balance)
 
 
 def log_trade(state, bot, symbol, percentage_price_change, coins, current_avg_price):
@@ -125,15 +128,16 @@ def log_trade(state, bot, symbol, percentage_price_change, coins, current_avg_pr
 
 
 # returns true if bot did sell or buy
-def do_next_action(percentage_price_change, bot, calc, symbol, current_avg_price, percentage_balance):
+def do_next_action(percentage_price_change, bot, calc, symbol, current_price, percentage_balance):
     if (bot.get_state() == 'BUY'):
         if percentage_price_change <= DIP_THRESHOLD or percentage_price_change >= UPWARD_TREND_THRESHOLD:
             current_balance_base = bot.get_coin_amount(symbol[:base_coin_len])
             print('I buy now')
+            coins = calc_trading_coins(calc, current_balance_base, percentage_balance, current_price)
+            print('%f coins for %f' % (coins, current_price))
+            #bot.send_order_total('MARKET', coins)
+            log_trade('BUY', bot, symbol, percentage_price_change, coins, current_price)
             bot.change_state()
-            coins = calc_trading_coins(calc, current_balance_base, percentage_balance)
-            bot.send_order_total('MARKET', coins)
-            log_trade('BUY', bot, symbol, percentage_price_change, coins, current_avg_price)
             return True
     else:
         if percentage_price_change <= STOP_LOSS_THRESHOLD or percentage_price_change >= PROFIT_THRESHOLD:
@@ -141,10 +145,10 @@ def do_next_action(percentage_price_change, bot, calc, symbol, current_avg_price
             print('I sell now')
             print('The profit would be %f' % (percentage_price_change))
             profit_arr.append(percentage_price_change)
+            coins = calc_trading_coins(calc, current_balance_base, percentage_balance, current_price)
+            #bot.send_order_total('MARKET', coins)
+            log_trade('SELL', bot, symbol, percentage_price_change, coins, current_price)
             bot.change_state()
-            coins = calc_trading_coins(calc, current_balance_base, percentage_balance)
-            bot.send_order_total('MARKET', coins)
-            log_trade('SELL', bot, symbol, percentage_price_change, coins, current_avg_price)
             return True
     return False
 
@@ -155,12 +159,12 @@ def main():
     calc, bot = init_classes(False, 'BUY', symbol)
 
     logging.info(bot.get_account_information()['balances'])
-    logging.info('Percentage of balance the bot will trade with: %2.2f' % (percentage))
+    logging.info('Percentage of basecoin balance the bot will trade with: %2.2f' % (percentage))
+
+    print(symbol)
+    print('Percentage of balance the bot will trade with: %2.2f' % (percentage))
     
     starting_balance = bot.get_coin_amount(symbol[:base_coin_len])
-
-    # todo total amount of coins to buy with bnb instead of bnb as coins
-    print(bot.send_order_total('MARKET', round(0.2606873275, 2)))
 
     bot_loop(calc, bot, symbol, starting_balance, percentage)
 
