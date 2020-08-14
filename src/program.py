@@ -114,6 +114,8 @@ def should_exit(bot, symbol, starting_balance):
 # todo? round needed?
 def calc_trading_coins(calc, current_balance, percentage_balance, current_price):
     base_coins = calc.get_amount_by_percentage(percentage_balance, current_balance)
+    trading_coins = round(base_coins / current_price, 3)
+    print('base_coins: %f\ncurrent_price: %f\ntrading_coins: %f' % (base_coins, current_price, trading_coins))
     return round(base_coins / current_price, 2)
 
 
@@ -121,7 +123,7 @@ def calc_trading_coins(calc, current_balance, percentage_balance, current_price)
 def log_trade(state, bot, symbol, percentage_price_change, coins, current_avg_price):
     current_balance_base = bot.get_coin_amount(symbol[:base_coin_len])
     current_balance_quote = bot.get_coin_amount(symbol[base_coin_len:])
-    logging.info('%s\n%s: %2.3f' % (get_readable_timestamp(), state, percentage_price_change))
+    logging.info('%s\n%s: %2.2f percent change' % (get_readable_timestamp(), state, percentage_price_change))
     verb = 'Bought' if state == 'BUY' else 'Sold'
     logging.info('%s %fcoins for %s' % (verb, coins, current_avg_price))
     logging.info('NEW BALANCE\n%s: %s\n%s: %s' % (symbol[:base_coin_len], current_balance_base, symbol[base_coin_len:], current_balance_quote))
