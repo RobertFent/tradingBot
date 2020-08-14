@@ -113,6 +113,26 @@ def bot_loop(calc, bot, symbol, starting_balance, percentage_balance, decimal_pl
 
 
 # returns true if current balance is twice as great or half starting balance
+# todo bug her
+'''
+Time: 14h:59min:48sec
+Total price change: 0.000018
+Percentage price change: 1.91
+
+
+Time: 15h:2min:22sec
+Total price change: 0.000000
+Percentage price change: 0.00
+Time to go now
+Traceback (most recent call last):
+  File "src/program.py", line 203, in <module>
+    except Exception as inst:
+  File "src/program.py", line 199, in main
+    try:
+  File "src/program.py", line 107, in bot_loop
+    raise Exception('Time to go now')
+Exception: Time to go now
+'''
 def should_exit(bot, symbol, starting_balance):
     current_balance = float(bot.get_coin_amount(symbol[base_coin_len:]))
     return current_balance < float(starting_balance)/2 or current_balance > float(starting_balance)*2
@@ -235,3 +255,275 @@ I sell now
 The profit would be 0.061000 # todo
 Starting to log
 """
+
+'''
+# todo sell calc?
+❯ python3 src/program.py 'FETBNB'
+FETBNB
+Percentage of balance the bot will trade with: 0.25
+Decimal places of base coin: 0
+
+
+Time: 12h:57min:46sec
+Total price change: 0.000000
+Percentage price change: 0.00
+
+
+Time: 13h:0min:20sec
+Total price change: 0.000003
+Percentage price change: 0.07
+
+
+Time: 13h:2min:53sec
+Total price change: 0.000016
+Percentage price change: 0.35
+
+
+Time: 13h:5min:27sec
+Total price change: 0.000036
+Percentage price change: 0.79
+
+
+Time: 13h:8min:1sec
+Total price change: 0.000017
+Percentage price change: 0.38
+
+
+Time: 13h:10min:35sec
+Total price change: -0.000013
+Percentage price change: -0.29
+
+
+Time: 13h:13min:8sec
+Total price change: -0.000022
+Percentage price change: -0.48
+
+
+Time: 13h:15min:41sec
+Total price change: 0.000031
+Percentage price change: 0.68
+
+
+Time: 13h:18min:15sec
+Total price change: 0.000035
+Percentage price change: 0.77
+
+
+Time: 13h:20min:49sec
+Total price change: 0.000040
+Percentage price change: 0.88
+
+
+Time: 13h:23min:22sec
+Total price change: 0.000066
+Percentage price change: 1.46
+
+
+Time: 13h:25min:56sec
+Total price change: 0.000052
+Percentage price change: 1.15
+
+
+Time: 13h:28min:29sec
+Total price change: 0.000047
+Percentage price change: 1.04
+
+
+Time: 13h:31min:3sec
+Total price change: 0.000046
+Percentage price change: 1.01
+
+
+Time: 13h:33min:37sec
+Total price change: 0.000046
+Percentage price change: 1.01
+
+
+Time: 13h:36min:10sec
+Total price change: 0.000076
+Percentage price change: 1.68
+
+
+Time: 13h:38min:43sec
+Total price change: 0.000062
+Percentage price change: 1.37
+
+
+Time: 13h:41min:17sec
+Total price change: 0.000080
+Percentage price change: 1.76
+
+
+Time: 13h:43min:50sec
+Total price change: 0.000085
+Percentage price change: 1.88
+I buy now
+56.000000 coins for 0.004638
+
+
+Time: 13h:46min:25sec
+Total price change: 0.000021
+Percentage price change: 0.45
+
+
+Time: 13h:48min:58sec
+Total price change: 0.000076
+Percentage price change: 1.64
+
+
+Time: 13h:51min:32sec
+Total price change: 0.000059
+Percentage price change: 1.27
+
+
+Time: 13h:54min:6sec
+Total price change: -0.000011
+Percentage price change: -0.24
+
+
+Time: 13h:56min:40sec
+Total price change: -0.000030
+Percentage price change: -0.65
+
+
+Time: 13h:59min:13sec
+Total price change: -0.000054
+Percentage price change: -1.16
+
+
+Time: 14h:1min:47sec
+Total price change: -0.000049
+Percentage price change: -1.06
+
+
+Time: 14h:4min:20sec
+Total price change: -0.000052
+Percentage price change: -1.12
+
+
+Time: 14h:6min:53sec
+Total price change: -0.000062
+Percentage price change: -1.34
+I sell now
+The profit would be -2.091000
+
+
+Time: 14h:9min:28sec
+Total price change: 0.000011
+Percentage price change: 0.24
+
+
+Time: 14h:12min:2sec
+Total price change: 0.000062
+Percentage price change: 1.36
+
+
+Time: 14h:14min:35sec
+Total price change: 0.000062
+Percentage price change: 1.36
+I buy now
+39.000000 coins for 0.004682
+
+
+Time: 14h:17min:10sec
+Total price change: 0.000007
+Percentage price change: 0.15
+
+
+Time: 14h:19min:43sec
+Total price change: 0.000029
+Percentage price change: 0.62
+
+
+Time: 14h:22min:17sec
+Total price change: 0.000004
+Percentage price change: 0.09
+
+
+Time: 14h:24min:50sec
+Total price change: -0.000006
+Percentage price change: -0.13
+
+
+Time: 14h:27min:24sec
+Total price change: 0.000015
+Percentage price change: 0.32
+
+
+Time: 14h:29min:57sec
+Total price change: 0.000015
+Percentage price change: 0.32
+
+
+Time: 14h:32min:31sec
+Total price change: 0.000006
+Percentage price change: 0.13
+
+
+Time: 14h:35min:5sec
+Total price change: -0.000016
+Percentage price change: -0.34
+
+
+Time: 14h:37min:38sec
+Total price change: -0.000039
+Percentage price change: -0.83
+
+
+Time: 14h:40min:11sec
+Total price change: -0.000033
+Percentage price change: -0.70
+
+
+Time: 14h:42min:45sec
+Total price change: -0.000008
+Percentage price change: -0.17
+
+
+Time: 14h:45min:19sec
+Total price change: -0.000007
+Percentage price change: -0.15
+
+
+Time: 14h:47min:52sec
+Total price change: 0.000002
+Percentage price change: 0.04
+
+
+Time: 14h:50min:25sec
+Total price change: -0.000011
+Percentage price change: -0.23
+
+
+Time: 14h:53min:7sec
+Total price change: -0.000011
+Percentage price change: -0.23
+
+
+Time: 14h:55min:41sec
+Total price change: -0.000013
+Percentage price change: -0.28
+
+
+Time: 14h:58min:15sec
+Total price change: -0.000013
+Percentage price change: -0.28
+I sell now
+The profit would be -2.499000
+
+
+Time: 15h:0min:49sec
+Total price change: -0.000008
+Percentage price change: -0.17
+I buy now
+38.000000 coins for 0.004493
+Time to go now
+Traceback (most recent call last):
+  File "src/program.py", line 200, in <module>
+    main()
+  File "src/program.py", line 196, in main
+    bot_loop(calc, bot, symbol, starting_balance, percentage, decimal_places)
+  File "src/program.py", line 107, in bot_loop
+    raise Exception('Time to go now')
+Exception: Time to go now
+'''
