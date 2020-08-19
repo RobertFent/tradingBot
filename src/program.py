@@ -70,18 +70,17 @@ def init_classes(testing, init_state, symbol):
 
 def parse_arguments():
     parser = argparse.ArgumentParser('My Trading Bot')
-    parser.add_argument('symbol', type=str,
+    parser.add_argument('symbol', type=str, default=DEFAULT_SYMBOL,
                         help='Symbol the bot shall trade', nargs='?')
-    parser.add_argument('percentage', type=float,
+    parser.add_argument('percentage', type=float, default=DEFAULT_PERCENTAGE,
                         help='Amount of current balance the bot shall trade', nargs='?')
-    parser.add_argument('decimal_places', type=int,
+    parser.add_argument('decimal_places', type=int, default=DEFAULT_DECIMAL_PLACES, 
                         help='Number of decimal places behind coin for trading', nargs='?')
     args = parser.parse_args()
-    symbol = args.symbol if args.symbol else DEFAULT_SYMBOL
-    percentage = round(args.percentage, 2) if args.percentage else DEFAULT_PERCENTAGE
-    # todo parse needed?
-    decimal_places = args.decimal_places if args.decimal_places else DEFAULT_DECIMAL_PLACES
-    return symbol, percentage, int(decimal_places)
+    symbol = args.symbol
+    percentage = round(args.percentage, 2)
+    decimal_places = int(args.decimal_places)
+    return symbol, percentage, decimal_places
 
 
 def get_readable_timestamp():
@@ -133,9 +132,10 @@ Traceback (most recent call last):
     raise Exception('Time to go now')
 Exception: Time to go now
 '''
+# todo also magic numbers
 def should_exit(bot, symbol, starting_balance):
     current_balance = float(bot.get_coin_amount(symbol[base_coin_len:]))
-    return current_balance < float(starting_balance)/2 or current_balance > float(starting_balance)*2
+    return current_balance < float(starting_balance)/3 or current_balance > float(starting_balance)*2
 
 # todo? round needed?
 def calc_trading_coins(calc, current_balance, percentage_balance, current_price, decimal_places):
