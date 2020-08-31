@@ -135,7 +135,12 @@ Exception: Time to go now
 # todo also magic numbers
 def should_exit(bot, symbol, starting_balance):
     current_balance = float(bot.get_coin_amount(symbol[base_coin_len:]))
-    return current_balance < float(starting_balance)/3 or current_balance > float(starting_balance)*2
+    if current_balance < float(starting_balance)/3 or current_balance > float(starting_balance)*2:
+        print('Exit!')
+        print('Current balance: %f' %(current_balance))
+        print('Starting balance: %f' %(starting_balance))
+        return True
+    return False
 
 # todo? round needed?
 def calc_trading_coins(calc, current_balance, percentage_balance, current_price, decimal_places):
@@ -222,17 +227,14 @@ except KeyboardInterrupt:
     logging.info('Profit-Array: %s' % (profit_arr))
 except Exception as inst:
     logging.info('Profit-Array: %s' % (profit_arr))
+    logging.info('Error: %s' % (traceback.format_exc()))
     print(inst)
     print(traceback.format_exc())
 
 # print(bot.get_system_status())
 # print(bot.get_coin_information('BNB'))
 
-# print(bot.send_order_total(SYMBOL, 'SELL', 'MARKET', 1))
-# print(bot.send_order_quote(SYMBOL, 'BUY', 'MARKET', 75))
-# print(bot.get_account_information()['balances'])
 # print(bot.get_order_book(SYMBOL))
-# print(bot.get_current_average_price(SYMBOL))
 # print(bot.get_daily_stats(SYMBOL))
 
 """
