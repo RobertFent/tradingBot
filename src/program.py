@@ -83,11 +83,13 @@ def parse_arguments():
         default=DEFAULT_DECIMAL_PLACES,
         help='Number of decimal places behind coin for trading',
         nargs='?')
+    parser.add_argument('init_state', type=str, default=None, help='Initial state of bot (BUY or SELL)', nargs='?')
     args = parser.parse_args()
     symbol = args.symbol
     percentage = round(args.percentage, 2)
     decimal_places = int(args.decimal_places)
-    return symbol, percentage, decimal_places
+    init_state = args.init_state
+    return symbol, percentage, decimal_places, init_state
 
 
 def get_readable_timestamp():
@@ -223,9 +225,10 @@ def init_logger(symbol):
 
 # todo split log in loop in methods
 def main():
-    symbol, percentage, decimal_places = parse_arguments()
+    symbol, percentage, decimal_places, init_state = parse_arguments()
     init_logger(symbol)
-    init_state = parse_init_state(symbol)
+    if(init_state == None):
+        init_state = parse_init_state(symbol)
     calc, bot = init_classes(False, init_state, symbol)
 
     # import balance; always quote coin (bnb, btc)
