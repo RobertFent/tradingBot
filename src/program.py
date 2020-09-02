@@ -83,7 +83,11 @@ def parse_arguments():
         default=DEFAULT_DECIMAL_PLACES,
         help='Number of decimal places behind coin for trading',
         nargs='?')
-    parser.add_argument('init_state', type=str, default=None, help='Initial state of bot (BUY or SELL)', nargs='?')
+    parser.add_argument('init_state',
+                        type=str,
+                        default=None,
+                        help='Initial state of bot (BUY or SELL)',
+                        nargs='?')
     args = parser.parse_args()
     symbol = args.symbol
     percentage = round(args.percentage, 2)
@@ -138,7 +142,8 @@ def should_exit(bot, symbol, starting_balance):
     balances = bot.get_account_information()['balances']
     # calc value of each base coin to quote coin value
     for balance in balances:
-        symbol_price = bot.get_symbol_price()
+        symbol_name = balance['asset'] + QUOTE_COIN
+        symbol_price = bot.get_symbol_price(symbol_name)
         estimated_quote_value = float(balance['free']) * float(symbol_price)
         current_balance += estimated_quote_value
     print(current_balance)
@@ -201,7 +206,8 @@ def do_next_action(percentage_price_change, bot, calc, symbol, current_price,
             print('The profit would be %f' % (percentage_price_change))
             profit_arr.append(percentage_price_change)
             # sell all base coins (ADA, FET, NEO etc.)
-            coins = round(float(bot.get_coin_amount(symbol[:len(BASE_COIN)])), decimal_places)
+            coins = round(float(bot.get_coin_amount(symbol[:len(BASE_COIN)])),
+                          decimal_places)
             #coins = calc_trading_coins(calc, current_balance_quote,
             #                           percentage_balance, current_price,
             #                           decimal_places)
@@ -236,7 +242,7 @@ def init_logger(symbol):
 def main():
     symbol, percentage, decimal_places, init_state = parse_arguments()
     init_logger(symbol)
-    if(init_state == None):
+    if (init_state == None):
         init_state = parse_init_state(symbol)
     calc, bot = init_classes(False, init_state, symbol)
 
@@ -252,8 +258,10 @@ def main():
 
     print(symbol)
     print('Init state: %s' % (init_state))
-    print('Starting balance quote (%s): %f' % (symbol[len(BASE_COIN):], starting_balance))
-    print('Starting balance base (%s): %f' % (symbol[:len(BASE_COIN)], starting_balance_base))
+    print('Starting balance quote (%s): %f' %
+          (symbol[len(BASE_COIN):], starting_balance))
+    print('Starting balance base (%s): %f' %
+          (symbol[:len(BASE_COIN)], starting_balance_base))
     print('Percentage of balance the bot will trade with: %2.2f' %
           (percentage))
     print('Decimal places of base coin: %d' % (decimal_places))

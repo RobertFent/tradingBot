@@ -121,9 +121,11 @@ class TradingBot:
         response = requests.get(self.baseEndpoint + '/api/v3/ticker/bookTicker', params=payload)
         return self._handle_response(response)
 
-    def get_symbol_price(self):
+    # returns price of current symbol if no other symbol is passed else returns price of other symbol
+    def get_symbol_price(self, *args):
+        symbol = args[0] if args[0] else self.symbol
         payload = {
-            'symbol': self.symbol
+            'symbol': symbol
         }
         response = requests.get(self.baseEndpoint + '/api/v3/ticker/price', params=payload)
         return self._handle_response(response)['price']
