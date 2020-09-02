@@ -132,7 +132,16 @@ def bot_loop(calc, bot, symbol, starting_balance, percentage_balance,
 # returns true if current balance is twice as great or half starting balance
 # todo magic numbers
 def should_exit(bot, symbol, starting_balance):
+    # get current balance of quote coin
     current_balance = float(bot.get_coin_amount(symbol[len(BASE_COIN):]))
+    # also add every other coin from this pair to current balance to make bot run simultanioulsy
+    balances = bot.get_account_information()['balances']
+    # calc value of each base coin to quote coin value
+    for balance in balances:
+        symbol_price = bot.get_symbol_price()
+        estimated_quote_value = float(balance['free']) * float(symbol_price)
+        current_balance += estimated_quote_value
+    print(current_balance)
     if current_balance < float(starting_balance) / 3 or current_balance > float(
             starting_balance) * 2:
         print('Exit!')
@@ -238,6 +247,8 @@ def main():
     logging.info(
         'Percentage of basecoin balance the bot will trade with: %2.2f' %
         (percentage))
+
+    should_exit(bot, symbol, starting_balance)
 
     print(symbol)
     print('Init state: %s' % (init_state))
