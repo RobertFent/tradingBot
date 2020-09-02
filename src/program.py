@@ -133,9 +133,7 @@ def bot_loop(calc, bot, symbol, starting_balance, percentage_balance,
         i += 1
 
 
-# returns true if current balance is twice as great or half starting balance
-# todo magic numbers
-def should_exit(bot, symbol, starting_balance):
+def get_total_balance(bot, symbol):
     # get current balance of quote coin
     current_balance = float(bot.get_coin_amount(symbol[len(BASE_COIN):]))
     # also add every other coin from this pair to current balance to make bot run simultanioulsy
@@ -146,6 +144,14 @@ def should_exit(bot, symbol, starting_balance):
         symbol_price = bot.get_symbol_price(symbol_name)
         estimated_quote_value = float(balance['free']) * float(symbol_price)
         current_balance += estimated_quote_value
+    return current_balance
+
+
+# returns true if current balance is twice as great or half starting balance
+# todo magic numbers
+def should_exit(bot, symbol, starting_balance):
+    # get current balance of quote and base coin
+    current_balance = get_total_balance(bot, symbol)
     if current_balance < float(starting_balance) / 3 or current_balance > float(
             starting_balance) * 2:
         print('Exit!')
@@ -245,26 +251,26 @@ def main():
         init_state = parse_init_state(symbol)
     calc, bot = init_classes(False, init_state, symbol)
 
-    # import balance; always quote coin (bnb, btc)
-    starting_balance = float(bot.get_coin_amount(symbol[len(BASE_COIN):]))
+    starting_balance_quote = float(bot.get_coin_amount(symbol[len(BASE_COIN):]))
     starting_balance_base = float(bot.get_coin_amount(symbol[:len(BASE_COIN)]))
+    # get current balance of quote and base coin
+    starting_balance_total = get_total_balance(bot, symbol)
     logging.info(bot.get_account_information()['balances'])
     logging.info(
         'Percentage of basecoin balance the bot will trade with: %2.2f' %
         (percentage))
 
-
     print(symbol)
     print('Init state: %s' % (init_state))
     print('Starting balance quote (%s): %f' %
-          (symbol[len(BASE_COIN):], starting_balance))
+          (symbol[len(BASE_COIN):], starting_balance_quote))
     print('Starting balance base (%s): %f' %
           (symbol[:len(BASE_COIN)], starting_balance_base))
     print('Percentage of balance the bot will trade with: %2.2f' %
           (percentage))
     print('Decimal places of base coin: %d' % (decimal_places))
 
-    bot_loop(calc, bot, symbol, starting_balance, percentage, decimal_places)
+    bot_loop(calc, bot, symbol, starting_balance_total, percentage, decimal_places)
 
 
 try:
