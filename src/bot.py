@@ -123,7 +123,7 @@ class TradingBot:
 
     # returns price of current symbol if no other symbol is passed else returns price of other symbol
     def get_symbol_price(self, *args):
-        symbol = args[0] if args[0] else self.symbol
+        symbol = args[0] if len(args) > 0 else self.symbol
         payload = {
             'symbol': symbol
         }

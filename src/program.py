@@ -142,11 +142,10 @@ def should_exit(bot, symbol, starting_balance):
     balances = bot.get_account_information()['balances']
     # calc value of each base coin to quote coin value
     for balance in balances:
-        symbol_name = balance['asset'] + QUOTE_COIN
+        symbol_name = balance['asset'] + symbol[len(BASE_COIN):]
         symbol_price = bot.get_symbol_price(symbol_name)
         estimated_quote_value = float(balance['free']) * float(symbol_price)
         current_balance += estimated_quote_value
-    print(current_balance)
     if current_balance < float(starting_balance) / 3 or current_balance > float(
             starting_balance) * 2:
         print('Exit!')
@@ -254,7 +253,6 @@ def main():
         'Percentage of basecoin balance the bot will trade with: %2.2f' %
         (percentage))
 
-    should_exit(bot, symbol, starting_balance)
 
     print(symbol)
     print('Init state: %s' % (init_state))
